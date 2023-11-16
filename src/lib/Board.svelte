@@ -25,31 +25,14 @@
     }
 </script>
 
-<style>
-    .board {
-        height: 60vh;
-        width: 100%;
-        padding: 0.5em;
-    }
-
-    .column {
-        height: 100%;
-        width: 35%;
-        padding: 0.5em;
-        margin: 0.5em;
-        float: left;
-        border: 1px solid #333333;
-    }
-</style>
-
 <section
-    class="board"
+    class="w-full flex-1 h-full flex p-2 gap-x-4"
     use:dndzone={{items: columns, flipDurationMs, type: 'column'}}
     on:consider={handleDndConsiderColumns}
     on:finalize={handleDndFinalizeColumns}
 >
     {#each columns as {id, name, items}, idx (id)}
-        <div class="column" animate:flip="{{duration: flipDurationMs}}">
+        <div class="h-full w-1/3 p-2 border border-gray-200 rounded-md" animate:flip="{{duration: flipDurationMs}}">
             <Column name={name} items={items} onDrop={(newItems) => handleItemFinalize(idx, newItems)} /> 
         </div>
     {/each}

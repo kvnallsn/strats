@@ -18,62 +18,26 @@
     }
 </script>
 
-<style>
-    .wrapper {
-        height: 100%;
-        width: 100%;
-
-        /*
-         * make sure this container doesn't scroll so the title stays on top
-         * and the dndzone inside is scrollable
-         */
-        overflow-y: hidden;
-    }
-
-    .column-content {
-        height: calc(100% - 2.5em);
-
-        /*
-         * The scroll container needs to be the dndzone if you want dragging
-         * near the edge to trigger scrolling
-         */
-        overflow-y: scroll;
-    }
-
-    .column-title {
-        height: 2.5em;
-        font-weight: bold;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .card {
-        height: 4em;
-        width: 100%;
-        margin: 0.4em 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background-color: #dddddd;
-        border: 1px solid #333333;
-    }
-</style>
-
-<div class="wrapper">
-    <div class="column-title">
+<div class="w-full h-full overflow-y-hidden flex flex-col">
+    <div class="font-bold flex justify-center items-center border-b py-1 mb-1">
         {name}
     </div>
-    <div
-        class="column-content"
+    <ul
+        class="flex flex-col divide-y divide-gray-100 gap-y-2 overflow-y-scroll h-full grow p-1"
         use:dndzone={{items, flipDurationMs, zoneTabIndex: -1}}
         on:consider={handleDndConsiderCards}
         on:finalize={handleDndFinalizeCards}
     >
-        {#each items as item (item.id)}
-            <div class="card" animate:flip="{{duration: flipDurationMs}}">
-                {item.name}
-            </div>
+        {#each items as item, idx (item.id)}
+            <li class="flex justify-between gap-x-6 py-5 px-2 border border-gray-300 rounded-md" animate:flip="{{duration: flipDurationMs}}">
+                <div class="flex items-center min-w-0 gap-x-4">
+                    <p>{idx + 1}</p> 
+                    <div class="min-w-0 flex-auto">
+                        <p class="text-sm font-semibold leading-6 text-gray-900">{item.name}</p>
+                        <p class="text-xs mt-1 truncate leading-5 text-gray-500">{item.title}</p>
+                    </div>
+                </div>
+            </li>
         {/each}
-    </div>
+    </ul>
 </div>
