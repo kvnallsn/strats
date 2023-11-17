@@ -10,6 +10,7 @@
     "check": "svelte-check --tsconfig ./tsconfig.json"
   },
   "devDependencies": {
+    "@steeze-ui/heroicons": "^2.2.3",
     "@sveltejs/vite-plugin-svelte": "^2.4.2",
     "@tsconfig/svelte": "^5.0.0",
     "autoprefixer": "^10.4.16",
@@ -23,6 +24,9 @@
     "vite-plugin-singlefile": "^0.13.5"
   },
   "dependencies": {
+    "@steeze-ui/svelte-icon": "^1.5.0",
+    "csv-parse": "^5.5.2",
+    "file-saver": "^2.0.5",
     "svelte-dnd-action": "^0.9.31"
   }
 }
