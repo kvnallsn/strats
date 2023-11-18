@@ -28,8 +28,8 @@
     let filter = '';
 
     $: population = data.pool.length + data.strats.length;
-    $: topHalf = population / 2;
-    $: topThird = population / 3;
+    $: topHalf = Math.floor(population / 2);
+    $: topThird = Math.floor(population / 3);
 
     function addToStrat(item) {
         const idx = data.pool.indexOf(item);
@@ -70,12 +70,14 @@
         showModal = false;
     }
 
-    function filterSecondLevel(item) {
-        return tem.search(new RegExp(selectedView, "i")) > -1;
+    function filterSecondLevel(item, pattern) {
+        const regex = new RegExp(pattern, "i");
+        console.log(pattern, regex, item.title, regex.test(item.title));
+        return regex.test(item.title);
     }
 </script>
 
-<section class="w-full flex-1 h-full flex p-2 gap-x-4">
+<section class="h-full w-full flex p-2 gap-x-4 overflow-y-hidden">
     <Modal title="Add Second Level Strat Category" show={showModal}>
         <div class="flex flex-col gap-y-2">
             <input type="text" bind:value={name} class="p-1 border border-gray-300 w-full" placeholder="Filter name (e.g. Team Leads, DOs, etc.)">
@@ -103,7 +105,7 @@
         <div slot="action" class="p-1 mb-1 border-b h-12">
             <input
                 type="text"
-                class="w-full border border-gray-200 rounded-md p-1"
+                class="w-full border border-gray-200 dark:border-slate-600 rounded-md p-1"
                 placeholder="Search..."
                 bind:value={poolSearch}
             />
@@ -169,7 +171,7 @@
         {#if data.views.length > 0}
             <List
                 items={data.strats}
-                filter={item => item.title.toLowerCase().includes(selectedView.toLowerCase())}
+                filter={item => filterSecondLevel(item, selectedView)}
                 let:item
                 let:idx
             >

@@ -63,7 +63,7 @@
     }
 </script>
 
-<header class="w-full h-12 text-white bg-gray-800 border-b border-gray-500 flex justify-between items-center px-2">
+<header class="fixed top-0 w-full h-12 text-white bg-gray-800 border-b border-gray-500 flex justify-between items-center px-2">
     <h2 class="text-xl">Stratification Tool</h2>
     <div class="flex gap-x-2">
         <label for="import-file" class=" cursor-pointer px-3 py-1 border rounded-md hover:bg-orange-500">
@@ -78,6 +78,6 @@
         <button class="px-3 py-1 border rounded-md bg-red-600 border-red-300 hover:bg-orange-500" on:click={reset}>Reset</button>
     </div>
 </header>
-<main class="h-full grow flex flex-col">
+<main class="pt-12 max-h-full flex flex-col bg-white dark:bg-black">
    <Board data={data} onFinalUpdate={handleBoardUpdated} />
 </main>
