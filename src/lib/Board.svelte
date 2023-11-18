@@ -42,7 +42,6 @@
     }
 
     function removeFromStrat(item) {
-        console.log('removing', item);
         const idx = data.strats.indexOf(item);
         if (idx > -1) {
             data.strats.splice(idx, 1);
@@ -69,6 +68,10 @@
         onFinalUpdate(data);
 
         showModal = false;
+    }
+
+    function filterSecondLevel(item) {
+        return tem.search(new RegExp(selectedView, "i")) > -1;
     }
 </script>
 
