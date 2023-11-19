@@ -10,6 +10,8 @@
     import { Icon } from '@steeze-ui/svelte-icon';
     import { Plus, Trash } from '@steeze-ui/heroicons';
 
+    import { clickOutside } from './clickOutside.js';
+
     const flipDurationMs = 300;
 
     // column items/data
@@ -26,6 +28,11 @@
     // used to add a new view
     let name = '';
     let filter = '';
+
+    let contextX = 0;
+    let contextY = 0;
+    let contextItem = undefined;
+    let contextVisible = false;
 
     $: population = data.pool.length + data.strats.length;
     $: topHalf = Math.floor(population / 2);
@@ -75,6 +82,31 @@
         console.log(pattern, regex, item.title, regex.test(item.title));
         return regex.test(item.title);
     }
+
+    function stratRightClick(event, item) {
+        event.preventDefault();
+        console.log(event);
+        contextX = event.clientX;
+        contextY = event.clientY;
+        contextItem = item;
+        contextVisible = true;
+    }
+
+    function sendToTop(item) {
+        const idx = data.strats.indexOf(item);
+        data.strats.splice(idx, 1);
+        data.strats.splice(0, 0, item);
+        contextVisible = false;
+        onFinalUpdate(data);
+    }
+
+    function sendToBottom(item) {
+        const idx = data.strats.indexOf(item);
+        data.strats.splice(idx, 1);
+        data.strats.push(item);
+        contextVisible = false;
+        onFinalUpdate(data);
+    }
 </script>
 
 <section class="h-full w-full flex p-2 gap-x-4 overflow-y-hidden">
@@ -100,6 +132,39 @@
             </button>
         </svelte:fragment>
     </Modal>
+
+    <!-- Context Menu -->
+    <div
+        class:hidden={!contextVisible}
+        class="absolute z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+        style={`left: ${contextX}px; top: ${contextY}px`}
+        role="menu"
+        aria-orientation="vertical"
+        aria-labelledby="menu-button"
+        tabindex="-1"
+        use:clickOutside
+        on:click_outside={() => contextVisible = false}
+    >
+        <div class="" role="none">
+            <button
+                class="w-full text-left text-slate-700 block px-4 py-2 text-sm hover:bg-slate-200 focus:bg-slate-300"
+                role="menuitem"
+                tabindex="-1"
+                id="menu-item-0"
+                on:click={() => sendToTop(contextItem)}
+            >
+                Send to Top
+            </button>            <button
+                class="w-full text-left text-slate-700 block px-4 py-2 text-sm hover:bg-slate-200 focus:bg-slate-300"
+                role="menuitem"
+                tabindex="-1"
+                id="menu-item-0"
+                on:click={() => sendToBottom(contextItem)}
+            >
+                Send to Bottom
+            </button>
+        </div>
+    </div>
 
     <Column name="Pool">
         <div slot="action" class="p-1 mb-1 border-b h-12">
@@ -144,10 +209,10 @@
             </div>
         </div>
         <DraggableList items={data.strats} onFinalize={handleStratsFinalize} let:item let:idx>
-            <Card item={item} idx={idx + 1}>
+            <Card item={item} idx={idx + 1} onRightClick={e => stratRightClick(e, item)}>
                 <button
                     slot="actions"
-                    class="p-2 w-12 h-full flex items-center justify-center hover:bg-red-200"
+                    class="p-2 w-12 flex items-center justify-center hover:bg-red-200"
                     on:click={() => removeFromStrat(item)}
                 >
                     <Icon src={Trash} size="20px" theme="outline" class="text-red-600" />
