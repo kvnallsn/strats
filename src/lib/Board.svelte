@@ -76,13 +76,11 @@
 
     function filterSecondLevel(item, pattern) {
         const regex = new RegExp(pattern, "i");
-        console.log(pattern, regex, item.title, regex.test(item.title));
         return regex.test(item.title);
     }
 
     function stratRightClick(event, item) {
         event.preventDefault();
-        console.log(event);
         contextX = event.clientX;
         contextY = event.clientY;
         contextItem = item;

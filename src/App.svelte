@@ -1,9 +1,22 @@
 <script lang="ts">
+    import { onMount } from 'svelte';
     import Board from './lib/Board.svelte';
+
     import { saveAs } from 'file-saver';
     import { parse } from 'csv-parse/browser/esm/sync';
 
     let data = initData();
+
+    onMount(() => {
+        const store = localStorage.getItem('data');
+        if (store) {
+            try {
+                data = JSON.parse(store);
+            } catch {
+                data = initData(); 
+            }
+        }
+    });
 
     function initData() {
         return {
@@ -14,7 +27,10 @@
     }
 
     function handleBoardUpdated(newData) {
-        data = newData;
+        if (newData) {
+            data = newData;
+            localStorage.setItem('data', JSON.stringify(data));
+        }
     }
 
     /**
@@ -33,9 +49,8 @@
             skip_empty_lines: true
         });
 
-        console.log(pool);
-
         data.pool = pool;
+        handleBoardUpdated(data);
     }
 
     function save() {
@@ -52,7 +67,7 @@
 
         const text = await file.text();
         try {
-            data = JSON.parse(text);
+            handleBoardUpdated(JSON.parse(text));
         } catch(e) {
             console.error('failed to parse JSON', e);
         }

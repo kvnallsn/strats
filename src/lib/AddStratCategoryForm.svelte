@@ -16,6 +16,17 @@
         name = templates[selected].name;
         filter = templates[selected].filter;
     }
+
+    function handleOnAddClick() {
+        onSuccess(name, filter);
+        reset();
+    }
+
+    function reset() {
+        name = '';
+        filter = '';
+        selected = '';
+    }
 </script>
 
 <div class="border-b border-slate-900/10 pb-4">
@@ -69,7 +80,7 @@
     <button
         type="button"
         class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-        on:click={() => onSuccess(name, filter)}
+        on:click={handleOnAddClick}
     >
         Add
     </button>
