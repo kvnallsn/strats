@@ -3,9 +3,9 @@
     export let onCancel;
     
     const templates = [
-        {name: "Flight CC", filter: /.*(Flight Commander).*/i},
-        {name: "Team Leads", filter: /.*(Team Lead).*/i},
-        {name: "O-4 Command (DO, Det/CC)", filter: /^(Director of Op|Commander|Det\/CC).*/i}
+        {name: "Flight CC", filter: ".*(Flight Commander).*"},
+        {name: "Team Leads", filter: ".*(Team Lead).*"},
+        {name: "O-4 Command (DO, Det/CC)", filter: "^(Director of Op|Commander|Det\/CC).*"}
     ];
 
     let name = '';

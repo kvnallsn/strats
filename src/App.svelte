@@ -1,98 +1,87 @@
 <script lang="ts">
-    import { onMount } from 'svelte';
+    // Components
     import Board from './lib/Board.svelte';
+    import Button from './lib/Button.svelte';
+    import Splash from './lib/Splash.svelte';
 
-    import { saveAs } from 'file-saver';
-    import { parse } from 'csv-parse/browser/esm/sync';
+    let data = initData('');
+    let sessions = [];
+    let showSplash = true;
+    let sessionName = '';
 
-    let data = initData();
-
-    onMount(() => {
-        const store = localStorage.getItem('data');
-        if (store) {
-            try {
-                data = JSON.parse(store);
-            } catch {
-                data = initData(); 
-            }
-        }
-    });
-
-    function initData() {
+    function initData(session) {
         return {
+            session: session,
             pool: [],
             strats: [],
             views: [],
         };
     }
 
+    function createSession(session, pool) {
+        sessionName = session;
+        handleBoardUpdated({
+            session: session,
+            pool: pool,
+            strats: [],
+            views: []
+        });
+        showSplash = false;
+    }
+
+    function loadSession(session) {
+        sessionName = session;
+        const store = localStorage.getItem(session);
+        if (store) {
+            try {
+                data = JSON.parse(store);
+                showSplash = false;
+            } catch (error) {
+                console.error('failed to load session', error);
+            }
+        }
+    }
+
     function handleBoardUpdated(newData) {
         if (newData) {
             data = newData;
-            localStorage.setItem('data', JSON.stringify(data));
+            save();
         }
-    }
-
-    /**
-     * Imports a CSV file into the pool
-     */
-    async function importCSV(e) {
-        const file = e.target.files[0];
-        if (file === null) {
-            // user cancelled the dialog
-            return;
-        }
-
-        const text = await file.text();
-        const pool = parse(text, {
-            columns: true,
-            skip_empty_lines: true
-        });
-
-        data.pool = pool;
-        handleBoardUpdated(data);
     }
 
     function save() {
-        const file = new Blob([JSON.stringify(data)], {type: 'text/plain'});
-        saveAs(file, "strats.json");
+        localStorage.setItem(sessionName, JSON.stringify(data));
     }
 
-    async function load(e) {
-        const file = e.target.files[0];
-        if (file === null) {
-            // user cancelled the dialog
-            return;
-        }
-
-        const text = await file.text();
-        try {
-            handleBoardUpdated(JSON.parse(text));
-        } catch(e) {
-            console.error('failed to parse JSON', e);
-        }
+    function close() {
+        save();
+        reset();
+        sessionName = '';
+        showSplash = true;
     }
 
     function reset() {
-        data = initData();
+        data = initData('');
     }
 </script>
 
 <header class="fixed top-0 w-full h-12 text-white bg-gray-800 border-b border-gray-500 flex justify-between items-center px-2">
-    <h2 class="text-xl">Stratification Tool</h2>
+    <div class="flex items-center">
+        <h2 class="text-xl">Stratification Tool</h2>
+        <h4 class="ml-4 text-md italic">{sessionName}</h4>
+    </div>
     <div class="flex gap-x-2">
-        <label for="import-file" class=" cursor-pointer px-3 py-1 border rounded-md hover:bg-orange-500">
-            <span>Import Pool</span>
-            <input id="import-file" type="file" class="sr-only" on:change={importCSV}>
-        </label>
-        <button class="px-3 py-1 border rounded-md hover:bg-orange-500" on:click={save}>Save</button>
-        <label for="load-file" class=" cursor-pointer px-3 py-1 border rounded-md hover:bg-orange-500">
-            <span>Load</span>
-            <input id="load-file" type="file" class="sr-only" on:change={load}>
-        </label>
-        <button class="px-3 py-1 border rounded-md bg-red-600 border-red-300 hover:bg-orange-500" on:click={reset}>Reset</button>
+        <Button onClick={save}>Save</Button>
+        <Button color="red" onClick={close}>Close</Button>
     </div>
 </header>
 <main class="pt-12 max-h-full flex flex-col bg-white dark:bg-black">
-   <Board data={data} onFinalUpdate={handleBoardUpdated} />
+    <Splash
+        show={showSplash}
+        onCreate={createSession}
+        onOpen={loadSession}
+    />
+    {#if !showSplash}
+        <Board data={data} onFinalUpdate={handleBoardUpdated} />
+    {/if}
 </main>
