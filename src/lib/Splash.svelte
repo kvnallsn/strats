@@ -136,7 +136,7 @@
      }
 </script>
 
-<Modal title="Stratification Tool" {show}>
+<Modal title="Stratification Tool" {show} size="4xl">
     <div class="grid grid-cols-2 divide-x divide-slate-300">
         <div class="flex flex-col pr-2">
             <div class="flex items-center border-b border-slate-300 h-10">

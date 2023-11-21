@@ -105,7 +105,7 @@
 </script>
 
 <section class="h-full w-full flex p-2 gap-x-4 overflow-y-hidden">
-    <Modal title="Add Second Level Strat Category" show={showModal}>
+    <Modal title="Add Second Level Strat Category" show={showModal} size="lg">
         <AddStratCategoryForm
             onCancel={() => showModal = false}
             onSuccess={addSecondLevelView}
@@ -175,7 +175,7 @@
     <Column name='Primary Stratification'>
         <div slot="action" class="p-1 mb-1 border-b h-12 grid grid-cols-3 gap-x-2 text-center items-center divide-x divide-gray-300">
             <div>
-                <span class="text-xs">Population:</span>
+                <span class="text-xs">Pool:</span>
                 <span class="text-sm">{population}</span>
             </div>
             <div>
